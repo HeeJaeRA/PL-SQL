@@ -23,7 +23,7 @@ END;
 /
 
 BEGIN
--- DML 사용 시 COMMIT, ROLLBACK 명시
+-- DML 사용 시 COMMIT, ROLLBACK, SAVEPOINT 명시
     INSERT INTO employee(empid, empname)
     VALUES (1000, 'Hong');
     ROLLBACK;
