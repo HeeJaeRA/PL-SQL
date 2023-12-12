@@ -105,3 +105,73 @@ BEGIN
     END LOOP;
 END;
 /
+
+-- 구구단 기본 LOOP
+DECLARE
+    v_input NUMBER := &단;
+    v_count NUMBER := 1;
+BEGIN
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(v_input || ' X ' || v_count || ' = ' || v_input * v_count);
+        v_count := v_count + 1;
+        EXIT WHEN v_count > 9;
+    END LOOP;
+END;
+
+-- 구구단 WHILE LOOP
+DECLARE
+    v_input NUMBER := &단;
+    v_count NUMBER := 1;
+BEGIN
+    WHILE v_count < 10 LOOP
+        DBMS_OUTPUT.PUT_LINE(v_input || ' X ' || v_count || ' = ' || v_input * v_count);
+        v_count := v_count + 1;
+    END LOOP;
+END;
+
+-- 구구단 FOR LOOP
+DECLARE
+    v_input NUMBER := &단;
+BEGIN
+    FOR i IN v_input .. v_input LOOP
+        FOR j IN 1 .. 9 LOOP
+        DBMS_OUTPUT.PUT_LINE(i || ' X ' || j || ' = ' || i*j);
+        END LOOP;
+    END LOOP;
+END;
+/
+/*
+DECLARE
+    v_input NUMBER := &단;
+BEGIN
+    FOR i IN 1 .. 9 LOOP
+        DBMS_OUTPUT.PUT_LINE(v_input || ' X ' || i || ' = ' || v_input * i);
+    END LOOP;
+END;
+/
+*/
+
+-- 구구단 출력
+BEGIN
+    FOR i IN 1 .. 9 LOOP
+        FOR j IN 2 .. 9 LOOP
+            DBMS_OUTPUT.PUT(j || ' X ' || i || ' = ' || LPAD(i * j, 2) || '    ');
+        END LOOP;
+        DBMS_OUTPUT.PUT_LINE('');
+    END LOOP;
+END;
+/
+
+-- 구구단 홀수만 출력
+BEGIN
+    FOR i IN 1 .. 9 LOOP
+        FOR j IN 1 .. 9 LOOP
+            -- <>, !=
+            IF MOD(j, 2) <> 0 THEN
+                DBMS_OUTPUT.PUT(j || ' X ' || i || ' = ' || LPAD(i * j, 2) || '    ');
+            END IF;
+        END LOOP;
+        DBMS_OUTPUT.PUT_LINE('');
+    END LOOP;
+END;
+/
