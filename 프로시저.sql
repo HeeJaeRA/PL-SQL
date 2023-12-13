@@ -176,3 +176,74 @@ BEGIN
 END;
 /
 EXECUTE yedam_emp(176);
+
+-- 사원 번호, 인상률 입력시 적용되는 프로시저
+CREATE OR REPLACE PROCEDURE y_update
+(v_eid IN NUMBER,
+ v_rate IN NUMBER)
+IS
+    v_emp_no NUMBER;
+    v_increase NUMBER;
+    e_no_deptno EXCEPTION;
+BEGIN
+    v_emp_no := v_eid;
+    v_increase := v_rate;
+    
+    UPDATE employees
+    SET salary = salary + (salary * v_increase/100)
+    WHERE employee_id = v_emp_no;
+    IF SQL%ROWCOUNT = 0 THEN
+        RAISE e_no_deptno;
+    END IF;
+    COMMIT;
+    
+    DBMS_OUTPUT.PUT_LINE('사원 번호 ' || v_emp_no || '번 급여 ' || v_increase || '% 인상');
+EXCEPTION
+    WHEN e_no_deptno THEN
+        DBMS_OUTPUT.PUT_LINE('No search employee!!');
+END;
+/
+EXECUTE y_update(100, 10);
+
+-- 테이블 생성
+create table yedam01
+(y_id number(10),
+ y_name varchar2(20));
+create table yedam02
+(y_id number(10),
+ y_name varchar2(20));
+ 
+ -- 부서 번호 입력시 입사년도가 2005년 이전 입사한 사원은 yedam01 테이블에 입력하고, 입사년도가 2005년(포함) 이후 입사한 사원은 yedam02 테이블에 입력하는 y_proc 프로시저
+ CREATE OR REPLACE PROCEDURE y_proc
+ (v_dept_no IN NUMBER)
+ IS
+    v_did NUMBER;
+    v_check_dno NUMBER;
+    
+    CURSOR emp_cursor 
+    (p_dept_id NUMBER) IS
+        SELECT employee_id, last_name, hire_date
+        FROM employees
+        WHERE department_id = p_dept_id;
+BEGIN
+    v_did := v_dept_no;
+    FOR emp_rec IN emp_cursor(v_did) LOOP
+        IF SUBSTR(TO_CHAR(emp_rec.hire_date), 0, 2) >= '05' THEN
+            INSERT INTO yedam01
+            VALUES (emp_rec.employee_id, emp_rec.last_name);
+        ELSE
+            INSERT INTO yedam02
+            VALUES (emp_rec.employee_id, emp_rec.last_name);
+        END IF;
+    END LOOP;
+END;
+/
+EXECUTE y_proc(100);
+
+ROLLBACK;
+
+SELECT * FROM YEDAM01;
+SELECT * FROM YEDAM02;
+
+DELETE FROM YEDAM01;
+DELETE FROM YEDAM02;
