@@ -250,13 +250,16 @@ BEGIN
     IF v_cnt = 0 THEN
         DBMS_OUTPUT.PUT_LINE('해당 부서에 사원이 없습니다.');
     ELSE
-        DBMS_OUTPUT.PUT_LINE(v_cnt || '명 등록 성공');
+        DBMS_OUTPUT.PUT_LINE(v_check_dno || '번 부서 ' ||v_cnt || '명 등록 성공');
     END IF;
+    
 EXCEPTION WHEN NO_DATA_FOUND THEN
     DBMS_OUTPUT.PUT_LINE('해당 부서는 존재하지 않습니다.');
 END;
 /
-EXECUTE y_proc(100);
+EXECUTE y_proc(50);
+
+select department_id, count(*) from employees group by department_id order by department_id;
 
 ROLLBACK;
 
