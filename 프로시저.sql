@@ -219,6 +219,7 @@ create table yedam02
  IS
     v_did NUMBER;
     v_check_dno NUMBER;
+    v_cnt NUMBER;
     
     CURSOR emp_cursor 
     (p_dept_id NUMBER) IS
@@ -226,19 +227,34 @@ create table yedam02
         FROM employees
         WHERE department_id = p_dept_id;
 BEGIN
+    v_cnt := 0;
     v_did := v_dept_no;
-    FOR emp_rec IN emp_cursor(v_did) LOOP
+    
+    SELECT department_id
+    INTO v_check_dno
+    FROM departments
+    WHERE department_id = v_did;
+    
+    FOR emp_rec IN emp_cursor(v_did) LOOP        
         IF SUBSTR(TO_CHAR(emp_rec.hire_date), 0, 2) >= '05' THEN
             INSERT INTO yedam01
             VALUES (emp_rec.employee_id, emp_rec.last_name);
+            v_cnt := v_cnt + SQL%ROWCOUNT;
         ELSE
             INSERT INTO yedam02
             VALUES (emp_rec.employee_id, emp_rec.last_name);
+            v_cnt := v_cnt + SQL%ROWCOUNT;
         END IF;
     END LOOP;
+                
+    IF v_cnt = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('해당 부서에 사원이 없습니다.');
+    END IF;
+EXCEPTION WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('해당 부서는 존재하지 않습니다.');
 END;
 /
-EXECUTE y_proc(100);
+EXECUTE y_proc(2600);
 
 ROLLBACK;
 
