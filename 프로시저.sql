@@ -236,7 +236,7 @@ BEGIN
     WHERE department_id = v_did;
     
     FOR emp_rec IN emp_cursor(v_did) LOOP        
-        IF SUBSTR(TO_CHAR(emp_rec.hire_date), 0, 2) >= '05' THEN
+        IF SUBSTR(TO_CHAR(emp_rec.hire_date), 0, 2) < '05' THEN
             INSERT INTO yedam01
             VALUES (emp_rec.employee_id, emp_rec.last_name);
             v_cnt := v_cnt + SQL%ROWCOUNT;
@@ -246,15 +246,17 @@ BEGIN
             v_cnt := v_cnt + SQL%ROWCOUNT;
         END IF;
     END LOOP;
-                
+    
     IF v_cnt = 0 THEN
         DBMS_OUTPUT.PUT_LINE('해당 부서에 사원이 없습니다.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE(v_cnt || '명 등록 성공');
     END IF;
 EXCEPTION WHEN NO_DATA_FOUND THEN
     DBMS_OUTPUT.PUT_LINE('해당 부서는 존재하지 않습니다.');
 END;
 /
-EXECUTE y_proc(2600);
+EXECUTE y_proc(100);
 
 ROLLBACK;
 
