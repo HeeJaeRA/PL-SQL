@@ -169,10 +169,9 @@ BEGIN
     INTO v_name
     FROM employees
     WHERE employee_id = v_emp_no;
-    DBMS_OUTPUT.PUT_LINE(v_name);
     
     v_result := RPAD(SUBSTR(v_name, 1, 1), length(v_name) , '*');
-    DBMS_OUTPUT.PUT_LINE(v_result);
+    DBMS_OUTPUT.PUT_LINE(v_name || ' -> ' || v_result);
 END;
 /
 EXECUTE yedam_emp(176);
